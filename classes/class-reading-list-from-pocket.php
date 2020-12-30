@@ -37,6 +37,12 @@ class Reading_List_From_Pocket {
 	public $slug;
 
 	/**
+	 * @var object
+	 * Administrative interface features
+	 */
+	public $admin;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param string $version The current plugin version
@@ -53,7 +59,8 @@ class Reading_List_From_Pocket {
 	}
 
 	public function init() {
-
+		// Admin features
+		$this->admin = new Reading_List_From_Pocket_Admin();
 	}
 
 	/**
