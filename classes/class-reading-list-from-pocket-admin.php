@@ -176,8 +176,8 @@ class Reading_List_From_Pocket_Admin {
 							$authorized           = $this->pocket->authorized_user_info();
 							$demo_result          = $this->pocket->retrieve();
 							$demo_retrieved_items = array();
-							if ( isset( $demo_result['list'] ) ) {
-								$demo_retrieved_items = $demo_result['list'];
+							if ( isset( $demo_result['data']['list'] ) ) {
+								$demo_retrieved_items = $demo_result['data']['list'];
 							}
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorized.php' );
 						}

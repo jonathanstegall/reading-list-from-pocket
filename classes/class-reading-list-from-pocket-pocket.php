@@ -190,6 +190,7 @@ class Reading_List_From_Pocket_Pocket {
 	}
 
 	public function retrieve( $params = array() ) {
+		$result       = array();
 		$retrieve_url = 'https://getpocket.com/v3/get';
 		
 		// required by pocket.
@@ -203,7 +204,9 @@ class Reading_List_From_Pocket_Pocket {
 
 		$cached = $this->wordpress->cache_get( $retrieve_url, $params, false );
 		if ( is_array( $cached ) ) {
-			$data = $cached;
+			$data                 = $cached;
+			$result['from_cache'] = true;
+			$result['cached']     = true;
 		} else {
 			$args = array(
 				'headers' => array(
@@ -221,9 +224,10 @@ class Reading_List_From_Pocket_Pocket {
 				$this->log_error( $data, $reset );
 			}
 			// only save the body of the request, not the headers.
-			$cached = $this->wordpress->cache_set( $retrieve_url, $args['body'], $data );
+			$result['cached'] = $this->wordpress->cache_set( $retrieve_url, $args['body'], $data );
 		}
-		return $data;
+		$result['data'] = $data;
+		return $result;
 	}
 
 }
