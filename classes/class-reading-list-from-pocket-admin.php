@@ -173,10 +173,11 @@ class Reading_List_From_Pocket_Admin {
 						if ( false === $is_authorized ) {
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorize.php' );
 						} else {
-							$authorized    = $this->pocket->authorized_user_info();
-							$demo_retrieve = array();
-							if ( isset( $this->pocket->retrieve()['list'] ) ) {
-								$demo_retrieve = $this->pocket->retrieve()['list'];
+							$authorized           = $this->pocket->authorized_user_info();
+							$demo_result          = $this->pocket->retrieve();
+							$demo_retrieved_items = array();
+							if ( isset( $demo_result['list'] ) ) {
+								$demo_retrieved_items = $demo_result['list'];
 							}
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorized.php' );
 						}

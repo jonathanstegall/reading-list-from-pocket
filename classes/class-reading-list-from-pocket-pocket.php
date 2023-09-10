@@ -203,7 +203,6 @@ class Reading_List_From_Pocket_Pocket {
 
 		$cached = $this->wordpress->cache_get( $retrieve_url, $params, false );
 		if ( is_array( $cached ) ) {
-			error_log( 'load from cache' );
 			$data = $cached;
 		} else {
 			$args = array(
@@ -221,8 +220,8 @@ class Reading_List_From_Pocket_Pocket {
 				$data = $response->get_error_message();
 				$this->log_error( $data, $reset );
 			}
-			$cached = $this->wordpress->cache_set( $retrieve_url, $args, $data );
-			error_log( 'cached now' );
+			// only save the body of the request, not the headers.
+			$cached = $this->wordpress->cache_set( $retrieve_url, $args['body'], $data );
 		}
 		return $data;
 	}
