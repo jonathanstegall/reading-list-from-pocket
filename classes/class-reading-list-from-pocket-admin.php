@@ -58,6 +58,14 @@ class Reading_List_From_Pocket_Admin {
 	public $pocket;
 
 	/**
+	 * Reading_List_From_Pocket_Pocket class
+	 * This contains Pocket API methods
+	 *
+	 * @var array
+	 */
+	public $wordpress;
+
+	/**
 	 * Object_Sync_Sf_WordPress_Transient class
 	 *
 	 * @var object
@@ -73,6 +81,7 @@ class Reading_List_From_Pocket_Admin {
 		$this->action_group_suffix = reading_list_from_pocket()->action_group_suffix;
 		$this->login_credentials   = reading_list_from_pocket()->login_credentials;
 		$this->pocket              = reading_list_from_pocket()->pocket;
+		$this->wordpress           = reading_list_from_pocket()->wordpress;
 
 		//$this->pages = $this->get_admin_pages();
 		$this->tabs = $this->get_admin_tabs();
@@ -164,7 +173,11 @@ class Reading_List_From_Pocket_Admin {
 						if ( false === $is_authorized ) {
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorize.php' );
 						} else {
-							$authorized = $this->pocket->authorized_user_info();
+							$authorized    = $this->pocket->authorized_user_info();
+							$demo_retrieve = array();
+							if ( isset( $this->pocket->retrieve()['list'] ) ) {
+								$demo_retrieve = $this->pocket->retrieve()['list'];
+							}
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorized.php' );
 						}
 						break;

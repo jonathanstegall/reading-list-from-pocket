@@ -75,8 +75,12 @@ class Reading_List_From_Pocket {
 	}
 
 	public function init() {
+		// WordPress features
+		$this->wordpress = new Reading_List_From_Pocket_WordPress();
+
 		// Pocket API features
 		$this->pocket = new Reading_List_From_Pocket_Pocket();
+		
 		// Admin features
 		$this->admin = new Reading_List_From_Pocket_Admin();
 	}

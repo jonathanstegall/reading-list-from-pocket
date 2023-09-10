@@ -49,6 +49,13 @@ class Reading_List_From_Pocket_Pocket {
 	 */
 	public $login_credentials;
 
+	/**
+	 * Login credentials for the Pocket API; comes from wp-config or from the plugin settings
+	 *
+	 * @var array
+	 */
+	public $wordpress;
+
 
 	public function __construct() {
 
@@ -58,6 +65,7 @@ class Reading_List_From_Pocket_Pocket {
 		$this->plugin_file         = reading_list_from_pocket()->file;
 		$this->action_group_suffix = reading_list_from_pocket()->action_group_suffix;
 		$this->login_credentials   = reading_list_from_pocket()->login_credentials;
+		$this->wordpress           = reading_list_from_pocket()->wordpress;
 
 		// use the option value for whether we're in debug mode.
 		$this->debug = filter_var( get_option( $this->option_prefix . 'debug_mode', false ), FILTER_VALIDATE_BOOLEAN );
@@ -179,6 +187,44 @@ class Reading_List_From_Pocket_Pocket {
 	 */
 	protected function set_pocket_username( $pocket_username ) {
 		update_option( $this->option_prefix . 'pocket_username', $pocket_username );
+	}
+
+	public function retrieve( $params = array() ) {
+		$retrieve_url = 'https://getpocket.com/v3/get';
+		
+		// required by pocket.
+		$params['consumer_key'] = $this->login_credentials['consumer_key'];
+		$params['access_token'] = $this->load_access_token();
+		
+		// required by this plugin.
+		if ( ! isset( $params['count'] ) && ! isset( $params['since'] ) ) {
+			$params['count'] = 25;
+		}
+
+		$cached = $this->wordpress->cache_get( $retrieve_url, $params, false );
+		if ( is_array( $cached ) ) {
+			error_log( 'load from cache' );
+			$data = $cached;
+		} else {
+			$args = array(
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'charset'      => 'UTF-8',
+					'X-Accept'     => 'application/json',
+				),
+				'body' => $params,
+			);
+			$response = wp_remote_get( esc_url_raw( $retrieve_url ), $args );
+			if ( ! is_wp_error( $response ) ) {
+				$data = json_decode( wp_remote_retrieve_body( $response ), true );
+			} else {
+				$data = $response->get_error_message();
+				$this->log_error( $data, $reset );
+			}
+			$cached = $this->wordpress->cache_set( $retrieve_url, $args, $data );
+			error_log( 'cached now' );
+		}
+		return $data;
 	}
 
 }
