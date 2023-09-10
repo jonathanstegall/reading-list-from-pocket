@@ -17,7 +17,19 @@ user: <?php echo $authorized['username']; ?>
 <?php if ( ! empty( $demo_retrieved_items ) ) : ?>
     <ol>
     <?php foreach ( $demo_retrieved_items as $save ) : ?>
-        <li><a href="<?php echo esc_url( $save['resolved_url'] ); ?>"><?php echo $save['resolved_title']; ?></a></li>
+        <li>
+            <a href="<?php echo esc_url( $save['resolved_url'] ); ?>">
+                <?php if ( '' !== $save['resolved_title'] ) : ?>
+                    <?php echo $save['resolved_title']; ?>
+                <?php elseif ( '' !== $save['given_title'] ) : ?>
+                    <?php echo $save['given_title']; ?>
+                <?php elseif ( '' !== $save['resolved_url'] ) : ?>
+                    <?php echo $save['resolved_url']; ?>
+                <?php else : ?>
+                    <?php echo $save['given_url']; ?>
+                <?php endif; ?>
+            </a>
+        </li>
     <?php endforeach; ?>
     </ol>
 <?php endif; ?>
