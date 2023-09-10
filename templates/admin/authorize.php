@@ -8,5 +8,5 @@
     }
     // save access token and reload the page.
     ?>
-    <script>window.location = '<?php echo esc_url_raw( $this->login_credentials['redirect_url'] ); ?>'</script>
+    <script>location.reload();</script>
 <?php endif; 
