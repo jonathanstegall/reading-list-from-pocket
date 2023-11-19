@@ -208,6 +208,7 @@ class Reading_List_From_Pocket_Pocket {
 			$result['from_cache'] = true;
 			$result['cached']     = true;
 		} else {
+			$result['from_cache'] = false;
 			$args = array(
 				'headers' => array(
 					'Content-Type' => 'application/json',
@@ -221,7 +222,7 @@ class Reading_List_From_Pocket_Pocket {
 				$data = json_decode( wp_remote_retrieve_body( $response ), true );
 			} else {
 				$data = $response->get_error_message();
-				$this->log_error( $data, $reset );
+				//$this->log_error( $data, $reset );
 			}
 			// only save the body of the request, not the headers.
 			$result['cached'] = $this->wordpress->cache_set( $retrieve_url, $args['body'], $data );

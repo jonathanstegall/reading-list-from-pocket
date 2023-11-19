@@ -173,8 +173,23 @@ class Reading_List_From_Pocket_Admin {
 						if ( false === $is_authorized ) {
 							require_once( plugin_dir_path( $this->plugin_file ) . 'templates/admin/authorize.php' );
 						} else {
+							$days = array(
+								0 => 'Sunday',
+								1 => 'Monday',
+								2 => 'Tuesday',
+								3 => 'Wednesday',
+								4 => 'Thursday',
+								5 => 'Friday',
+								6 => 'Saturday'
+							);
 							$authorized           = $this->pocket->authorized_user_info();
-							$demo_result          = $this->pocket->retrieve();
+							$start_of_week        = (int) get_option( 'start_of_week', 1 );
+							$start_day_of_week    = $days[ $start_of_week ];
+							$demo_result_args     = array(
+								'since' => date( 'm/d/Y', strtotime( 'last ' . $start_day_of_week ) )
+							);
+							$demo_result_args = array();
+							$demo_result          = $this->pocket->retrieve( $demo_result_args );
 							$demo_retrieved_items = array();
 							if ( isset( $demo_result['data']['list'] ) ) {
 								$demo_retrieved_items = $demo_result['data']['list'];
