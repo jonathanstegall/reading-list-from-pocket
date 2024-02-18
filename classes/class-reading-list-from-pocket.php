@@ -57,6 +57,18 @@ class Reading_List_From_Pocket {
 	public $admin;
 
 	/**
+	 * @var object
+	 * Dealing with WordPress data
+	 */
+	public $wordpress;
+
+	/**
+	 * @var object
+	 * Dealing with Pocket data
+	 */
+	public $pocket;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param string $version The current plugin version
@@ -71,7 +83,6 @@ class Reading_List_From_Pocket {
 		$this->login_credentials   = $this->get_login_credentials();
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-
 	}
 
 	public function init() {
@@ -80,7 +91,7 @@ class Reading_List_From_Pocket {
 
 		// Pocket API features
 		$this->pocket = new Reading_List_From_Pocket_Pocket();
-		
+
 		// Admin features
 		$this->admin = new Reading_List_From_Pocket_Admin();
 	}
@@ -92,11 +103,11 @@ class Reading_List_From_Pocket {
 	 * @return array $login_credentials
 	 */
 	private function get_login_credentials() {
-		$consumer_key        = defined( 'POCKET_CONSUMER_KEY' ) ? POCKET_CONSUMER_KEY : get_option( $this->option_prefix . 'consumer_key', '' );
-		$request_token_url   = defined( 'POCKET_REQUEST_TOKEN_URL' ) ? POCKET_REQUEST_TOKEN_URL : get_option( $this->option_prefix . 'request_token_url', 'https://getpocket.com/v3/oauth/request' );
-		$authorize_url       = defined( 'POCKET_AUTHORIZE_URL' ) ? POCKET_AUTHORIZE_URL : get_option( $this->option_prefix . 'authorize_url', 'https://getpocket.com/v3/oauth/authorize' );
-		$redirect_url        = defined( 'POCKET_REDIRECT_URL' ) ? POCKET_REDIRECT_URL : get_option( $this->option_prefix . 'redirect_url', '' );
-		$login_credentials   = array(
+		$consumer_key      = defined( 'POCKET_CONSUMER_KEY' ) ? POCKET_CONSUMER_KEY : get_option( $this->option_prefix . 'consumer_key', '' );
+		$request_token_url = defined( 'POCKET_REQUEST_TOKEN_URL' ) ? POCKET_REQUEST_TOKEN_URL : get_option( $this->option_prefix . 'request_token_url', 'https://getpocket.com/v3/oauth/request' );
+		$authorize_url     = defined( 'POCKET_AUTHORIZE_URL' ) ? POCKET_AUTHORIZE_URL : get_option( $this->option_prefix . 'authorize_url', 'https://getpocket.com/v3/oauth/authorize' );
+		$redirect_url      = defined( 'POCKET_REDIRECT_URL' ) ? POCKET_REDIRECT_URL : get_option( $this->option_prefix . 'redirect_url', '' );
+		$login_credentials = array(
 			'consumer_key'      => $consumer_key,
 			'request_token_url' => $request_token_url,
 			'authorize_url'     => $authorize_url,
@@ -139,5 +150,4 @@ class Reading_List_From_Pocket {
 		}
 		return $return;
 	}
-
 }
