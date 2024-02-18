@@ -190,13 +190,15 @@ class Reading_List_From_Pocket_Admin {
 							5 => 'Friday',
 							6 => 'Saturday',
 						);
+						//$week_to_retrieve     = '-3 weeks ';
+						$week_to_retrieve     = 'last ';
 						$authorized           = $this->pocket->authorized_user_info();
 						$start_of_week        = (int) get_option( 'start_of_week', 1 );
 						$start_day_of_week    = $days[ $start_of_week ];
 						$demo_result_args     = array(
-							'since' => gmdate( 'm/d/Y', strtotime( 'last ' . $start_day_of_week ) ),
+							'since'          => strtotime( $week_to_retrieve . $start_day_of_week ),
+							'since_readable' => gmdate( 'm/d/Y', strtotime( $week_to_retrieve . $start_day_of_week ) ),
 						);
-						$demo_result_args     = array();
 						$demo_result          = $this->pocket->retrieve( $demo_result_args );
 						$demo_retrieved_items = array();
 						if ( isset( $demo_result['data']['list'] ) ) {
