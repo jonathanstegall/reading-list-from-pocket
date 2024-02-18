@@ -56,6 +56,13 @@ class Reading_List_From_Pocket_Pocket {
 	 */
 	public $wordpress;
 
+	/**
+	 * Whether debug mode is active
+	 *
+	 * @var bool
+	 */
+	public $debug;
+
 
 	public function __construct() {
 
@@ -69,7 +76,6 @@ class Reading_List_From_Pocket_Pocket {
 
 		// use the option value for whether we're in debug mode.
 		$this->debug = filter_var( get_option( $this->option_prefix . 'debug_mode', false ), FILTER_VALIDATE_BOOLEAN );
-
 	}
 
 	/**
@@ -99,13 +105,13 @@ class Reading_List_From_Pocket_Pocket {
 		$redirect_url      = $this->login_credentials['redirect_url'];
 		$message           = '';
 		if ( '' !== $consumer_key && '' !== $request_token_url && '' !== $redirect_url ) {
-			$args = array(
+			$args     = array(
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'charset'      => 'UTF-8',
 					'X-Accept'     => 'application/json',
 				),
-				'body' => wp_json_encode(
+				'body'    => wp_json_encode(
 					array(
 						'consumer_key' => $consumer_key,
 						'redirect_uri' => esc_url_raw( $redirect_url ),
@@ -127,13 +133,13 @@ class Reading_List_From_Pocket_Pocket {
 		$authorize_url = $this->login_credentials['authorize_url'];
 		$message       = '';
 		if ( '' !== $consumer_key && '' !== $authorize_url && '' !== $request_token ) {
-			$args = array(
+			$args     = array(
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'charset'      => 'UTF-8',
 					'X-Accept'     => 'application/json',
 				),
-				'body' => wp_json_encode(
+				'body'    => wp_json_encode(
 					array(
 						'consumer_key' => $consumer_key,
 						'code'         => esc_attr( $request_token ),
@@ -192,11 +198,9 @@ class Reading_List_From_Pocket_Pocket {
 	public function retrieve( $params = array() ) {
 		$result       = array();
 		$retrieve_url = 'https://getpocket.com/v3/get';
-		
 		// required by pocket.
 		$params['consumer_key'] = $this->login_credentials['consumer_key'];
 		$params['access_token'] = $this->load_access_token();
-		
 		// required by this plugin.
 		if ( ! isset( $params['count'] ) && ! isset( $params['since'] ) ) {
 			$params['count'] = 25;
@@ -208,20 +212,21 @@ class Reading_List_From_Pocket_Pocket {
 			$result['from_cache'] = true;
 			$result['cached']     = true;
 		} else {
-			$args = array(
+			$result['from_cache'] = false;
+			$args                 = array(
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'charset'      => 'UTF-8',
 					'X-Accept'     => 'application/json',
 				),
-				'body' => $params,
+				'body'    => $params,
 			);
-			$response = wp_remote_get( esc_url_raw( $retrieve_url ), $args );
+			$response             = wp_remote_get( esc_url_raw( $retrieve_url ), $args );
 			if ( ! is_wp_error( $response ) ) {
 				$data = json_decode( wp_remote_retrieve_body( $response ), true );
 			} else {
 				$data = $response->get_error_message();
-				$this->log_error( $data, $reset );
+				//$this->log_error( $data, $reset );
 			}
 			// only save the body of the request, not the headers.
 			$result['cached'] = $this->wordpress->cache_set( $retrieve_url, $args['body'], $data );
@@ -229,6 +234,4 @@ class Reading_List_From_Pocket_Pocket {
 		$result['data'] = $data;
 		return $result;
 	}
-
 }
-	
